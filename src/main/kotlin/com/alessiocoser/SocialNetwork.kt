@@ -1,5 +1,9 @@
 package com.alessiocoser
 
+import com.alessiocoser.commandParsers.FollowCommandParser
+import com.alessiocoser.commandParsers.NewMessageCommandParser
+import com.alessiocoser.commandParsers.UserMessagesCommandParser
+import com.alessiocoser.commandParsers.WallCommandParser
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
@@ -11,54 +15,33 @@ class SocialNetwork(
     fun send(input: Input, output: Output) {
         val command = input.read()
 
-        return handleCommand(command, output)
+        val parsers = listOf(
+            FollowCommandParser(command),
+            WallCommandParser(command),
+            NewMessageCommandParser(command),
+            UserMessagesCommandParser(command)
+        )
+
+        return handleCommand(parsers.first { it.canParse() }.parse(), output)
     }
 
-    private fun handleCommand(command: String, output: Output) {
-        if(followCommandCanApply(command)) {
-            return followCommand(command)
+    private fun handleCommand(command: Command, output: Output) {
+        when(command) {
+            is FollowCommand -> relations.follow(command.follower, command.followed)
+            is WallCommand -> wallMessages(command, output)
+            is NewMessageCommand -> timeline.add(Message(command.owner, command.text, clock.now()))
+            is UserMessagesCommand -> userMessages(command, output)
         }
+    }
 
-        if (userWallCommandCanApply(command)) {
-            return userWallCommand(command)
-                .forEach { output.write(it.owner + " - " + it.text + time(it.time)) }
-        }
-
-        if (sendCommandCanApply(command)) {
-            return sendCommandApply(command)
-                .forEach { output.write(it.text + time(it.time)) }
-        }
-
-        return userMessagesCommand(command)
+    private fun userMessages(command: UserMessagesCommand, output: Output) {
+        timeline.messagesOf(listOf(command.owner))
             .forEach { output.write(it.text + time(it.time)) }
     }
 
-    private fun followCommand(command: String) {
-        val follower = command.split("follows").first().trim()
-        val followed = command.split("follows").last().trim()
-        relations.follow(follower, followed)
-    }
-
-    private fun followCommandCanApply(command: String) = command.contains("follows")
-
-    private fun userWallCommand(command: String): List<Message> {
-        val owner = command.split(" ").first().trim()
-
-        return timeline.messagesOf(relations.followedBy(owner) + owner)
-    }
-
-    private fun userWallCommandCanApply(command: String) = command.endsWith("wall")
-
-    private fun userMessagesCommand(command: String) = timeline.messagesOf(listOf(command))
-
-    private fun sendCommandCanApply(command: String) = command.contains("->")
-
-    private fun sendCommandApply(command: String): List<Message> {
-        val owner = command.split("->").first().trim()
-        val text = command.split("->").last().trim()
-        timeline.add(Message(owner, text, clock.now()))
-
-        return emptyList()
+    private fun wallMessages(command: WallCommand, output: Output) {
+        timeline.messagesOf(relations.followedBy(command.owner) + command.owner)
+            .forEach { output.write(it.owner + " - " + it.text + time(it.time)) }
     }
 
     private fun time(time: LocalDateTime): String {
