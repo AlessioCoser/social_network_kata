@@ -1,6 +1,10 @@
 package com.alessiocoser.acceptance
 
 import com.alessiocoser.*
+import com.alessiocoser.commandParsers.FollowCommandParser
+import com.alessiocoser.commandParsers.NewMessageCommandParser
+import com.alessiocoser.commandParsers.UserMessagesCommandParser
+import com.alessiocoser.commandParsers.WallCommandParser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -62,7 +66,14 @@ class PublishMessagesToPersonalTimelineTest {
         assertEquals(listOf("Charlie - Good game though.", "Bob - Damn! We lost!"), output.messages)
     }
 
-    private fun app(clock: FakeClock) = SocialNetwork(clock, InMemoryTimelineRepository(), InMemoryRelationsRepository())
+    private fun app(clock: FakeClock) = SocialNetwork(
+        clock, InMemoryTimelineRepository(), InMemoryRelationsRepository(), listOf(
+            FollowCommandParser(),
+            WallCommandParser(),
+            NewMessageCommandParser(),
+            UserMessagesCommandParser()
+        )
+    )
 
     private fun fakeClock() = FakeClock("2020-01-01")
 
