@@ -11,7 +11,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `happy path`() {
         val output = SpyOutput()
-        val app = SocialNetwork(FakeClock("2020-01-01"))
+        val app = SocialNetwork(fakeClock())
         app.send(input("Alice -> I love the weather today"), output)
         app.send(input("Bob -> Damn! We lost!"), output)
         app.send(input("Bob -> Good game though."), output)
@@ -28,7 +28,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `messages with times ago`() {
         val output = SpyOutput()
-        val clock = FakeClock("2020-01-01")
+        val clock = fakeClock()
         val app = SocialNetwork(clock)
 
         clock.at("12:01:00")
@@ -40,6 +40,19 @@ class PublishMessagesToPersonalTimelineTest {
         assertEquals(listOf("Good game though.", "Damn! We lost! (1 minutes ago)"), output.messages)
     }
 
+    @Test
+    fun `see all my messages on my wall`() {
+        val output = SpyOutput()
+        val app = SocialNetwork(fakeClock())
+
+        app.send(input("Bob -> Damn! We lost!"), output)
+        app.send(input("Bob -> Good game though."), output)
+
+        app.send(input("Bob wall"), output)
+        assertEquals(listOf("Bob - Good game though.", "Bob - Damn! We lost!"), output.messages)
+    }
+
+    private fun fakeClock() = FakeClock("2020-01-01")
 
     private fun input(text: String) = object : Input {
         override fun read() = text
