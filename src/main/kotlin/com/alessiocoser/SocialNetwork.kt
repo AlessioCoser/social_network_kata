@@ -16,13 +16,13 @@ class SocialNetwork(
         val command = input.read()
 
         val parsers = listOf(
-            FollowCommandParser(command),
-            WallCommandParser(command),
-            NewMessageCommandParser(command),
-            UserMessagesCommandParser(command)
+            FollowCommandParser(),
+            WallCommandParser(),
+            NewMessageCommandParser(),
+            UserMessagesCommandParser()
         )
 
-        return handleCommand(parsers.first { it.canParse() }.parse(), output)
+        return handleCommand(parsers.first { it.canParse(command) }.parse(command), output)
     }
 
     private fun handleCommand(command: Command, output: Output) {

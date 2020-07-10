@@ -2,10 +2,10 @@ package com.alessiocoser.commandParsers
 
 import com.alessiocoser.WallCommand
 
-class WallCommandParser(private val command: String) : CommandParser {
-    override fun canParse() = command.endsWith("wall")
+class WallCommandParser : CommandParser {
+    override fun canParse(command: String) = command.endsWith("wall")
 
-    override fun parse(): WallCommand {
+    override fun parse(command: String): WallCommand {
         val owner = command.split(" ").first().trim()
         return WallCommand(owner)
     }
