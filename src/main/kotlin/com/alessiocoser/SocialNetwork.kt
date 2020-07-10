@@ -14,11 +14,8 @@ class SocialNetwork(private val clock: Clock) {
     }
 
     private fun handleCommand(command: String, output: Output) {
-        if(command.contains("follows")) {
-            val follower = command.split("follows").first().trim()
-            val followed = command.split("follows").last().trim()
-            val relations = relations.getOrPut(follower) { mutableListOf() }
-            relations.add(followed)
+        if(followCommandCanApply(command)) {
+            return followCommand(command)
         }
 
         if (userWallCommandCanApply(command)) {
@@ -35,31 +32,49 @@ class SocialNetwork(private val clock: Clock) {
             .forEach { output.write(it.text + time(it.time)) }
     }
 
+    private fun followCommand(command: String) {
+        val follower = command.split("follows").first().trim()
+        val followed = command.split("follows").last().trim()
+        follow(follower, followed)
+    }
+
+    private fun followCommandCanApply(command: String) = command.contains("follows")
+
     private fun userWallCommand(command: String): List<Message> {
         val owner = command.split(" ").first().trim()
-        println(relations)
-        return messages
-            .filter { it.owner == owner || followedBy(owner).contains(it.owner) }
-            .asReversed()
+
+        return timelineMessagesOf(followedBy(owner) + owner)
     }
 
     private fun userWallCommandCanApply(command: String) = command.endsWith("wall")
 
-    private fun userMessagesCommand(command: String) = messages
-        .filter { it.owner == command }
-        .asReversed()
+    private fun userMessagesCommand(command: String) = timelineMessagesOf(listOf(command))
 
     private fun sendCommandCanApply(command: String) = command.contains("->")
 
     private fun sendCommandApply(command: String): List<Message> {
         val owner = command.split("->").first().trim()
         val text = command.split("->").last().trim()
-        messages.add(Message(owner, text, clock.now()))
+        timelineWrite(Message(owner, text, clock.now()))
 
         return emptyList()
     }
 
-    private fun followedBy(owner: String) = relations.getOrDefault(owner, emptyList<String>())
+    private fun timelineWrite(message: Message) {
+        messages.add(message)
+    }
+
+    private fun timelineMessagesOf(people: List<String>): List<Message> {
+        return messages
+            .filter { people.contains(it.owner) }
+            .asReversed()
+    }
+
+    private fun follow(follower: String, followed: String) {
+        followedBy(follower).add(followed)
+    }
+
+    private fun followedBy(follower: String) = relations.getOrPut(follower) { mutableListOf() }
 
     private fun time(time: LocalDateTime): String {
         val minutesAgo = time.until(clock.now(), MINUTES)
