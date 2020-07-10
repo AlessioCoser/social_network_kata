@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
 class SocialNetwork(private val clock: Clock) {
-    private val messages: MutableList<Message> = mutableListOf()
+    private val timeline: InMemoryTimelineRepository = InMemoryTimelineRepository()
     private val relations: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     fun send(input: Input, output: Output) {
@@ -43,31 +43,21 @@ class SocialNetwork(private val clock: Clock) {
     private fun userWallCommand(command: String): List<Message> {
         val owner = command.split(" ").first().trim()
 
-        return timelineMessagesOf(followedBy(owner) + owner)
+        return timeline.messagesOf(followedBy(owner) + owner)
     }
 
     private fun userWallCommandCanApply(command: String) = command.endsWith("wall")
 
-    private fun userMessagesCommand(command: String) = timelineMessagesOf(listOf(command))
+    private fun userMessagesCommand(command: String) = timeline.messagesOf(listOf(command))
 
     private fun sendCommandCanApply(command: String) = command.contains("->")
 
     private fun sendCommandApply(command: String): List<Message> {
         val owner = command.split("->").first().trim()
         val text = command.split("->").last().trim()
-        timelineWrite(Message(owner, text, clock.now()))
+        timeline.add(Message(owner, text, clock.now()))
 
         return emptyList()
-    }
-
-    private fun timelineWrite(message: Message) {
-        messages.add(message)
-    }
-
-    private fun timelineMessagesOf(people: List<String>): List<Message> {
-        return messages
-            .filter { people.contains(it.owner) }
-            .asReversed()
     }
 
     private fun follow(follower: String, followed: String) {
