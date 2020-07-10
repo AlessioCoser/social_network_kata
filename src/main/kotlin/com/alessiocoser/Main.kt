@@ -1,7 +1,7 @@
 package com.alessiocoser
 
 fun main() {
-    val app = SocialNetwork(RealClock(), InMemoryTimelineRepository())
+    val app = SocialNetwork(RealClock(), InMemoryTimelineRepository(), InMemoryRelationsRepository())
     val input = CliInput()
     val output = CliOutput()
 

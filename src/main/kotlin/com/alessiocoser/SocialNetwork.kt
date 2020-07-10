@@ -3,9 +3,11 @@ package com.alessiocoser
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
-class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepository) {
-    private val relations: RelationsRepository = InMemoryRelationsRepository()
-
+class SocialNetwork(
+    private val clock: Clock,
+    private val timeline: TimelineRepository,
+    private val relations: RelationsRepository
+) {
     fun send(input: Input, output: Output) {
         val command = input.read()
 

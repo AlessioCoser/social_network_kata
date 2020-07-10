@@ -62,7 +62,7 @@ class PublishMessagesToPersonalTimelineTest {
         assertEquals(listOf("Charlie - Good game though.", "Bob - Damn! We lost!"), output.messages)
     }
 
-    private fun app(clock: FakeClock) = SocialNetwork(clock, InMemoryTimelineRepository())
+    private fun app(clock: FakeClock) = SocialNetwork(clock, InMemoryTimelineRepository(), InMemoryRelationsRepository())
 
     private fun fakeClock() = FakeClock("2020-01-01")
 
