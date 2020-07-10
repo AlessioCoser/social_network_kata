@@ -2,7 +2,7 @@ package com.alessiocoser.acceptance
 
 import com.alessiocoser.CliApp
 import com.alessiocoser.Input
-import com.alessiocoser.Output
+import com.alessiocoser.SpyOutput
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -26,17 +26,5 @@ class PublishMessagesToPersonalTimelineTest {
 
     private fun input(text: String) = object : Input {
         override fun read() = text
-    }
-}
-
-class SpyOutput: Output {
-    val messages: MutableList<String> = mutableListOf()
-
-    override fun write(text: String) {
-        messages.add(text)
-    }
-
-    fun reset() {
-        messages.removeAll(messages)
     }
 }
