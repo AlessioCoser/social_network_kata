@@ -1,5 +1,11 @@
 package com.alessiocoser
 
 fun main() {
-    println("Hello world")
+    val app = CliApp()
+    val input = CliInput()
+    val output = CliOutput()
+
+    while (true) {
+        app.send(input, output)
+    }
 }
