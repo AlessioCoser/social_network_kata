@@ -1,6 +1,17 @@
 # Social Networking Kata
 Credits to [Sandro Mancuso](https://twitter.com/sandromancuso) and [Samir Talwar](https://twitter.com/SamirTalwar) for the [original idea](http://monospacedmonologues.com/post/49250842364/the-social-networking-kata).
 
+## Prerequisites
+- Kotlin and JVM installed
+
+## Run Application
+```
+./gradlew clean build
+java -jar build/libs/SocialNetworkingKata-1.jar
+```
+
+# Requirements
+
 Implement a console-based social networking application (similar to Twitter) satisfying the scenarios below.
 
 ### Scenarios
