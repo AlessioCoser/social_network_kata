@@ -3,7 +3,7 @@ package com.alessiocoser
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
-class CliApp(private val clock: Clock) {
+class SocialNetwork(private val clock: Clock) {
     private val messages: MutableList<Message> = mutableListOf()
 
     fun send(input: Input, output: Output) {

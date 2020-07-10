@@ -1,6 +1,6 @@
 package com.alessiocoser.acceptance
 
-import com.alessiocoser.CliApp
+import com.alessiocoser.SocialNetwork
 import com.alessiocoser.FakeClock
 import com.alessiocoser.Input
 import com.alessiocoser.SpyOutput
@@ -11,7 +11,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `happy path`() {
         val output = SpyOutput()
-        val app = CliApp(FakeClock("2020-01-01"))
+        val app = SocialNetwork(FakeClock("2020-01-01"))
         app.send(input("Alice -> I love the weather today"), output)
         app.send(input("Bob -> Damn! We lost!"), output)
         app.send(input("Bob -> Good game though."), output)
@@ -29,7 +29,7 @@ class PublishMessagesToPersonalTimelineTest {
     fun `messages with times ago`() {
         val output = SpyOutput()
         val clock = FakeClock("2020-01-01")
-        val app = CliApp(clock)
+        val app = SocialNetwork(clock)
 
         clock.at("12:01:00")
         app.send(input("Bob -> Damn! We lost!"), output)
