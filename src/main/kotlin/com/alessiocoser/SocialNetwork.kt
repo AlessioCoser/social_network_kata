@@ -1,23 +1,14 @@
 package com.alessiocoser
 
-import com.alessiocoser.commandParsers.CommandParser
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit.MINUTES
+import java.time.temporal.ChronoUnit
 
 class SocialNetwork(
     private val clock: Clock,
     private val timeline: TimelineRepository,
-    private val relations: RelationsRepository,
-    private val parsers: List<CommandParser>
+    private val relations: RelationsRepository
 ) {
-    fun send(input: Input, output: Output) {
-        val command = input.read()
-
-        return handleCommand(parsers.first { it.canParse(command) }.parse(command))
-            .forEach { output.write(it) }
-    }
-
-    private fun handleCommand(command: Command): List<String> {
+    fun send(command: Command): List<String> {
         return when(command) {
             is FollowCommand -> follow(command)
             is WallCommand -> wallMessages(command)
@@ -47,7 +38,7 @@ class SocialNetwork(
     }
 
     private fun time(time: LocalDateTime): String {
-        val minutesAgo = time.until(clock.now(), MINUTES)
+        val minutesAgo = time.until(clock.now(), ChronoUnit.MINUTES)
         if(minutesAgo <= 0) {
             return ""
         }
