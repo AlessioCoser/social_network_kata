@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
 class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepository) {
-    private val relations: MutableMap<String, MutableList<String>> = mutableMapOf()
+    private val relations: RelationsRepository = InMemoryRelationsRepository()
 
     fun send(input: Input, output: Output) {
         val command = input.read()
@@ -34,7 +34,7 @@ class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepo
     private fun followCommand(command: String) {
         val follower = command.split("follows").first().trim()
         val followed = command.split("follows").last().trim()
-        follow(follower, followed)
+        relations.follow(follower, followed)
     }
 
     private fun followCommandCanApply(command: String) = command.contains("follows")
@@ -42,7 +42,7 @@ class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepo
     private fun userWallCommand(command: String): List<Message> {
         val owner = command.split(" ").first().trim()
 
-        return timeline.messagesOf(followedBy(owner) + owner)
+        return timeline.messagesOf(relations.followedBy(owner) + owner)
     }
 
     private fun userWallCommandCanApply(command: String) = command.endsWith("wall")
@@ -58,12 +58,6 @@ class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepo
 
         return emptyList()
     }
-
-    private fun follow(follower: String, followed: String) {
-        followedBy(follower).add(followed)
-    }
-
-    private fun followedBy(follower: String) = relations.getOrPut(follower) { mutableListOf() }
 
     private fun time(time: LocalDateTime): String {
         val minutesAgo = time.until(clock.now(), MINUTES)
