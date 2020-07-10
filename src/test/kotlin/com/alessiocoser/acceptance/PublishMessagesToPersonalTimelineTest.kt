@@ -16,12 +16,12 @@ class PublishMessagesToPersonalTimelineTest {
         app.send(input("Bob -> Good game though."), output)
 
         app.send(input("Alice"), output)
-        assertEquals(listOf("\\> I love the weather today"), output.messages)
+        assertEquals(listOf("I love the weather today"), output.messages)
 
         output.reset()
 
         app.send(input("Bob"), output)
-        assertEquals(listOf("\\> Good game though.", "\\> Damn! We lost!"), output.messages)
+        assertEquals(listOf("Good game though.", "Damn! We lost!"), output.messages)
     }
 
     private fun input(text: String) = object : Input {

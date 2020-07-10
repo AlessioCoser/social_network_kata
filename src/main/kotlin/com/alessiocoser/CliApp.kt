@@ -11,6 +11,6 @@ class CliApp {
             messages.add(Message(owner, text))
         }
 
-        messages.filter { it.owner == command }.asReversed().forEach { output.write("\\> ${it.text}") }
+        messages.filter { it.owner == command }.asReversed().forEach { output.write(it.text) }
     }
 }
