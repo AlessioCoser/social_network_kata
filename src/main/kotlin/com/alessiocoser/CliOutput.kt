@@ -1,3 +1,7 @@
 package com.alessiocoser 
 
-class CliOutput: Output
+class CliOutput: Output {
+    override fun write(text: String) {
+        println(text)
+    }
+}
