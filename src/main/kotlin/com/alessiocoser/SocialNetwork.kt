@@ -1,13 +1,14 @@
 package com.alessiocoser
 
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 class SocialNetwork(
     private val clock: Clock,
     private val timeline: TimelineRepository,
     private val relations: RelationsRepository
 ) {
+    private val timesAgo = TimesAgo(clock)
+
     fun send(command: Command): List<String> {
         return when(command) {
             is FollowCommand -> follow(command)
@@ -38,11 +39,9 @@ class SocialNetwork(
     }
 
     private fun time(time: LocalDateTime): String {
-        val minutesAgo = time.until(clock.now(), ChronoUnit.MINUTES)
-        if(minutesAgo <= 0) {
-            return ""
-        }
+        val ago = timesAgo.from(time)
+        if(ago.isEmpty()) return ""
 
-        return " (1 minutes ago)"
+        return " ($ago)"
     }
 }

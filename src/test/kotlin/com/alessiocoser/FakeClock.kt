@@ -10,7 +10,8 @@ class FakeClock(private val day: String): Clock {
 
     override fun now(): LocalDateTime = time
 
-    fun at(parsedTime: String) {
+    fun at(parsedTime: String): Clock {
         time = LocalDateTime.parse(day + "T" + parsedTime + "+00:00", ISO_DATE_TIME)
+        return this
     }
 }

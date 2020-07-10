@@ -33,7 +33,7 @@ class AppTest {
         app.single("Bob -> Good game though.")
 
         app.single("Bob")
-        assertEquals(listOf("Good game though.", "Damn! We lost! (1 minutes ago)"), output.messages)
+        assertEquals(listOf("Good game though.", "Damn! We lost! (1 minute ago)"), output.messages)
     }
 
     @Test
