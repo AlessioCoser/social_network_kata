@@ -1,9 +1,6 @@
 package com.alessiocoser.acceptance
 
-import com.alessiocoser.SocialNetwork
-import com.alessiocoser.FakeClock
-import com.alessiocoser.Input
-import com.alessiocoser.SpyOutput
+import com.alessiocoser.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -11,7 +8,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `happy path`() {
         val output = SpyOutput()
-        val app = SocialNetwork(fakeClock())
+        val app = app(fakeClock())
         app.send(input("Alice -> I love the weather today"), output)
         app.send(input("Bob -> Damn! We lost!"), output)
         app.send(input("Bob -> Good game though."), output)
@@ -29,7 +26,7 @@ class PublishMessagesToPersonalTimelineTest {
     fun `messages with times ago`() {
         val output = SpyOutput()
         val clock = fakeClock()
-        val app = SocialNetwork(clock)
+        val app = app(clock)
 
         clock.at("12:01:00")
         app.send(input("Bob -> Damn! We lost!"), output)
@@ -43,7 +40,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `see all my messages on my wall`() {
         val output = SpyOutput()
-        val app = SocialNetwork(fakeClock())
+        val app = app(fakeClock())
 
         app.send(input("Bob -> Damn! We lost!"), output)
         app.send(input("Bob -> Good game though."), output)
@@ -55,7 +52,7 @@ class PublishMessagesToPersonalTimelineTest {
     @Test
     fun `see also followed messages on my wall`() {
         val output = SpyOutput()
-        val app = SocialNetwork(fakeClock())
+        val app = app(fakeClock())
 
         app.send(input("Bob -> Damn! We lost!"), output)
         app.send(input("Charlie -> Good game though."), output)
@@ -64,6 +61,8 @@ class PublishMessagesToPersonalTimelineTest {
         app.send(input("Bob wall"), output)
         assertEquals(listOf("Charlie - Good game though.", "Bob - Damn! We lost!"), output.messages)
     }
+
+    private fun app(clock: FakeClock) = SocialNetwork(clock, InMemoryTimelineRepository())
 
     private fun fakeClock() = FakeClock("2020-01-01")
 

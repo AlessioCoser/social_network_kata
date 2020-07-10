@@ -1,13 +1,13 @@
 package com.alessiocoser
 
-class InMemoryTimelineRepository {
+class InMemoryTimelineRepository: TimelineRepository {
     private val messages: MutableList<Message> = mutableListOf()
 
-    fun add(message: Message) {
+    override fun add(message: Message) {
         messages.add(message)
     }
 
-    fun messagesOf(people: List<String>): List<Message> {
+    override fun messagesOf(people: List<String>): List<Message> {
         return messages
             .filter { people.contains(it.owner) }
             .asReversed()

@@ -3,8 +3,7 @@ package com.alessiocoser
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MINUTES
 
-class SocialNetwork(private val clock: Clock) {
-    private val timeline: InMemoryTimelineRepository = InMemoryTimelineRepository()
+class SocialNetwork(private val clock: Clock, private val timeline: TimelineRepository) {
     private val relations: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     fun send(input: Input, output: Output) {
