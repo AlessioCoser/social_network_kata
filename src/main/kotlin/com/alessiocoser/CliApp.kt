@@ -8,13 +8,25 @@ class CliApp(private val clock: Clock) {
 
     fun send(input: Input, output: Output) {
         val command = input.read()
-        if(command.contains("->")) {
-            val owner = command.split("->").first().trim()
-            val text = command.split("->").last().trim()
-            messages.add(Message(owner, text, clock.now()))
+
+        if (sendCommandCanApply(command)) {
+            sendCommandApply(command)
         }
 
-        messages.filter { it.owner == command }.asReversed().forEach { output.write(it.text + time(it.time)) }
+        userMessagesCommand(command)
+            .forEach { output.write(it.text + time(it.time)) }
+    }
+
+    private fun userMessagesCommand(command: String) = messages
+        .filter { it.owner == command }
+        .asReversed()
+
+    private fun sendCommandCanApply(command: String) = command.contains("->")
+
+    private fun sendCommandApply(command: String) {
+        val owner = command.split("->").first().trim()
+        val text = command.split("->").last().trim()
+        messages.add(Message(owner, text, clock.now()))
     }
 
     private fun time(time: LocalDateTime): String {
