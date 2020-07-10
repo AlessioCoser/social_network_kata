@@ -52,6 +52,19 @@ class PublishMessagesToPersonalTimelineTest {
         assertEquals(listOf("Bob - Good game though.", "Bob - Damn! We lost!"), output.messages)
     }
 
+    @Test
+    fun `see also followed messages on my wall`() {
+        val output = SpyOutput()
+        val app = SocialNetwork(fakeClock())
+
+        app.send(input("Bob -> Damn! We lost!"), output)
+        app.send(input("Charlie -> Good game though."), output)
+        app.send(input("Bob follows Charlie"), output)
+
+        app.send(input("Bob wall"), output)
+        assertEquals(listOf("Charlie - Good game though.", "Bob - Damn! We lost!"), output.messages)
+    }
+
     private fun fakeClock() = FakeClock("2020-01-01")
 
     private fun input(text: String) = object : Input {
