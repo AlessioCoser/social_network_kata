@@ -10,6 +10,11 @@ Credits to [Sandro Mancuso](https://twitter.com/sandromancuso) and [Samir Talwar
 java -jar build/libs/SocialNetworkingKata-1.jar
 ```
 
+## Run tests
+```
+./gradlew clean test
+```
+
 # Requirements
 
 Implement a console-based social networking application (similar to Twitter) satisfying the scenarios below.
