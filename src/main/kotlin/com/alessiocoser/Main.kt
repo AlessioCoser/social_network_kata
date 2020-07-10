@@ -1,7 +1,7 @@
 package com.alessiocoser
 
 fun main() {
-    val app = CliApp()
+    val app = CliApp(RealClock())
     val input = CliInput()
     val output = CliOutput()
 
